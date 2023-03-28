@@ -22,6 +22,8 @@ https://github.com/line/line-bot-sdk-python/blob/master/examples/flask-echo/app_
 
 import os
 import sys
+import yfinance as yf
+import datetime
 from argparse import ArgumentParser
 
 from flask import Flask, request, abort
@@ -69,12 +71,24 @@ def callback():
     return 'OK'
 
 #訊息傳遞區塊 
+# @handler.add(MessageEvent, message=TextMessage)
+# def message_text(event):
+#     line_bot_api.reply_message(
+#         event.reply_token,
+#         TextSendMessage(text=event.message.text)
+#     )
+# message='2330'
 @handler.add(MessageEvent, message=TextMessage)
-def message_text(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text)
-    )
+def laststockprice_text(event):
+    message = event.message.text
+    if len(message)== 4:
+        symbol = event.message.text.replace(" ","") #合併字串取消空白
+        now = datetime.date.today()
+        start = now + datetime.timedelta(days = -5)
+        df = yf.download(str(symbol)+".TW", start = str(start), end = str(now))
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(df.iloc[-1]))
+    else:
+        line_bot_api.reply_message(event.reply_token,TextSendMessage('Please enter the Taiwan stock symbol'))
 
 
 if __name__ == "__main__":
