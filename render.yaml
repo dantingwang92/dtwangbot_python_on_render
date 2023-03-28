@@ -1,0 +1,14 @@
+services:
+- type: web
+  name: dtwangbot_python_on_render
+  env: python
+  repo: https://github.com/dantingwang92/dtwangbot_python_on_render.git
+  buildCommand: pip install gunicorn -r requirements.txt
+  startCommand: gunicorn app:app
+  plan: free
+  autoDeploy: false
+  envVars:
+  - key: LINE_CHANNEL_ACCESS_TOKEN
+    sync: false
+  - key: LINE_CHANNEL_SECRET
+    sync: false
