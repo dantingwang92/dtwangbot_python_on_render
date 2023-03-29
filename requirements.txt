@@ -2,4 +2,4 @@ line-bot-sdk==2.4.2
 requests
 flask
 Gunicorn
-re
+regex
